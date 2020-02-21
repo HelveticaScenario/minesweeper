@@ -1,15 +1,38 @@
 {
   "name": "minesweeper",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Minesweeper",
+  "main": "index.js",
+  "author": "tajo <vojtech@miksu.cz>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "jest"
   },
   "dependencies": {
+    "@cloudflare/component-button": "^2.6.32",
+    "@cloudflare/component-page": "^4.2.259",
+    "@reduxjs/toolkit": "^1.2.5",
+    "@types/react": "^16.9.20",
+    "@types/react-redux": "^7.1.7",
+    "fela": "^11.1.2",
+    "fela-preset-web": "^11.1.2",
+    "jest": "^25.1.0",
+    "localforage": "^1.7.3",
     "next": "9.2.2",
+    "prettier": "^1.19.1",
     "react": "16.12.0",
-    "react-dom": "16.12.0"
+    "react-dom": "16.12.0",
+    "react-fela": "^11.1.2",
+    "react-redux": "^7.2.0",
+    "redux-persist": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.7.2",
+    "typescript": "^3.7.5",
+    "uglifyjs-webpack-plugin": "^2.2.0"
   }
 }
