@@ -1,18 +1,28 @@
 import { FC } from 'react';
 import Desk from '../desk';
-import Layout from '../layout';
+import Header from '../header';
 
 import Fullscreen from '../fullscreen';
-import Theme from '../theme';
+import Theme, { useFela } from '../theme';
+import DifficultySelector from '../difficultySelector';
 
 interface AppState {}
 const App: FC<AppState> = () => {
+  const { css } = useFela();
   return (
     <Theme>
       <Fullscreen>
-        <Layout>
+        <div
+          className={css({
+            display: 'flex',
+            flexDirection: 'column',
+            minWidth: 450
+          })}
+        >
+          <Header />
           <Desk />
-        </Layout>
+          <DifficultySelector />
+        </div>
       </Fullscreen>
     </Theme>
   );

@@ -1,6 +1,16 @@
-import { createSlice, PayloadAction, CaseReducer } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  PayloadAction,
+  CaseReducer,
+  Draft
+} from '@reduxjs/toolkit';
 
-import { makeIndex, makeCoords, simpleQueue } from '../utils';
+import {
+  makeIndex,
+  makeCoords,
+  simpleQueue,
+  incOnTrueDecOnFalse
+} from '../utils';
 import {
   Coords,
   Square,
@@ -11,8 +21,29 @@ import {
   Blank,
   WinState,
   Grid,
-  Indices
+  Indices,
+  Difficulty,
+  Difficulties,
+  DifficultyOptions
 } from './types';
+
+const difficulties: Difficulties = {
+  [DifficultyOptions.Beginner]: {
+    width: 9,
+    height: 9,
+    mineCount: 10
+  },
+  [DifficultyOptions.Intermediate]: {
+    width: 16,
+    height: 16,
+    mineCount: 40
+  },
+  [DifficultyOptions.Expert]: {
+    width: 24,
+    height: 24,
+    mineCount: 99
+  }
+};
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -31,15 +62,8 @@ const makeBlank = (minesAdjacent: number): Blank => ({
   minesAdjacent
 });
 
-const createBoard = (
-  width: number,
-  height: number,
-  mineCount: number
-): Board => {
-  const dimensions: Dimensions = {
-    width,
-    height
-  };
+const createBoard = (difficultyOption: DifficultyOptions): Board => {
+  const { width, height, mineCount } = difficulties[difficultyOption];
 
   const grid: Square[] = Array(width * height);
 
@@ -89,20 +113,13 @@ const createBoard = (
 
   return {
     grid,
-    dimensions,
-    mineCount,
+    difficultyOption,
+    difficulty: { width, height, mineCount },
+    flagCount: 0,
+    flaggedMineCount: 0,
     winState: WinState.Playing,
     mineIndices: Array.from(mineIndices)
   };
-};
-
-const checkForWin = (grid: Grid, mineIndices: Indices): boolean => {
-  for (let index of mineIndices) {
-    if (!grid[index].flagged) {
-      return false;
-    }
-  }
-  return true;
 };
 
 const queue = simpleQueue();
@@ -112,7 +129,7 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
   draft,
   { payload }
 ) => {
-  const { width, height } = draft.dimensions;
+  const { width, height } = draft.difficulty;
   const index = (c: Coords) => makeIndex(width, c.x, c.y);
 
   const coords = (idx: number) => makeCoords(width, idx);
@@ -180,9 +197,23 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
       }
       if (y + 1 < height) {
         enqueue(index({ x, y: y + 1 }));
+        if (x + 1 < width) {
+          enqueue(index({ x: x + 1, y: y + 1 }));
+        }
+
+        if (x - 1 >= 0) {
+          enqueue(index({ x: x - 1, y: y + 1 }));
+        }
       }
       if (y - 1 >= 0) {
         enqueue(index({ x, y: y - 1 }));
+        if (x + 1 < width) {
+          enqueue(index({ x: x + 1, y: y - 1 }));
+        }
+
+        if (x - 1 >= 0) {
+          enqueue(index({ x: x - 1, y: y - 1 }));
+        }
       }
     }
   }
@@ -190,17 +221,39 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
 
 const slice = createSlice({
   name: 'board',
-  initialState: createBoard(10, 10, 10),
+  initialState: createBoard(DifficultyOptions.Beginner),
   reducers: {
-    newGame: draft =>
-      createBoard(draft.dimensions.width, draft.dimensions.height, 10),
+    newGame: draft => createBoard(draft.difficultyOption),
+    selectDifficulty: (_draft, { payload }: PayloadAction<DifficultyOptions>) =>
+      createBoard(payload),
     setFlag: (
       draft,
-      { payload }: PayloadAction<Coords & { flagState: boolean }>
+      {
+        payload: { flagState, x, y }
+      }: PayloadAction<Coords & { flagState: boolean }>
     ) => {
-      const index = makeIndex(draft.dimensions.width, payload.x, payload.y);
-      draft.grid[index].flagged = payload.flagState;
-      if (checkForWin(draft.grid, draft.mineIndices)) {
+      const index = makeIndex(draft.difficulty.width, x, y);
+      const square = draft.grid[index];
+
+      if (
+        square.flagged === flagState ||
+        (flagState && draft.flagCount >= draft.difficulty.mineCount)
+      ) {
+        return;
+      }
+
+      draft.flagCount = incOnTrueDecOnFalse(draft.flagCount, flagState);
+
+      if (square.type === SquareType.Mine) {
+        draft.flaggedMineCount = incOnTrueDecOnFalse(
+          draft.flaggedMineCount,
+          flagState
+        );
+      }
+
+      draft.grid[index].flagged = flagState;
+
+      if (draft.flaggedMineCount === draft.difficulty.mineCount) {
         draft.winState = WinState.Won;
       }
     },

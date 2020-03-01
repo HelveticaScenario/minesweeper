@@ -30,7 +30,8 @@ const Square: FC<SquareProps> = ({ square, coords }) => {
   const style = css({
     cursor: winState !== WinState.Playing || exposed ? 'initial' : 'pointer',
     backgroundColor: exposed ? '#CCC' : '#FFF',
-    border: `1px solid black`,
+    borderTop: `1px solid black`,
+    borderLeft: `1px solid black`,
     lineHeight: 1,
     textAlign: 'center',
     fontSize: 18,

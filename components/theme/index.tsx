@@ -8,8 +8,8 @@ export interface ITheme {
 
 const theme: ITheme = {
   squareDimension: {
-    width: 50,
-    height: 50
+    width: 30,
+    height: 30
   }
 };
 

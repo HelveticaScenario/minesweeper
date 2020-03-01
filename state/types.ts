@@ -39,10 +39,26 @@ export enum WinState {
   Lost
 }
 
-export interface Board {
-  readonly dimensions: Dimensions;
-  readonly grid: Grid;
+export enum DifficultyOptions {
+  Beginner = 'Beginner',
+  Intermediate = 'Intermediate',
+  Expert = 'Expert'
+}
+
+export interface Difficulty extends Dimensions {
   readonly mineCount: number;
+}
+
+export type Difficulties = {
+  readonly [key in DifficultyOptions]: Difficulty;
+};
+
+export interface Board {
+  readonly difficultyOption: DifficultyOptions;
+  readonly difficulty: Difficulty;
+  readonly grid: Grid;
+  readonly flagCount: number;
+  readonly flaggedMineCount: number;
   readonly winState: WinState;
   readonly mineIndices: Indices;
 }

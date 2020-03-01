@@ -58,3 +58,6 @@ export const simpleQueue = (initialSize: number = 128) => {
     }
   };
 };
+
+export const incOnTrueDecOnFalse = (val: number, bool: boolean) =>
+  bool ? val + 1 : val - 1;
