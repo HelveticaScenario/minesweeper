@@ -5,10 +5,5 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest'
   },
-  testPathIgnorePatterns: ['./.next/', './node_modules/'],
-//   globals: {
-//     'ts-jest': {
-//       tsConfig: 'tsconfig.jest.json'
-//     }
-//   }
+  testPathIgnorePatterns: ['./.next/', './node_modules/']
 };
