@@ -1,7 +1,11 @@
-import { useFela } from '../theme';
+import { useFela } from '../../utils';
+import { FC } from 'react';
 
-const Mine = () => {
+interface MineProps {}
+
+const Mine: FC<MineProps> = () => {
   const { theme } = useFela();
+
   return (
     <div
       style={{

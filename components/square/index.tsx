@@ -1,4 +1,6 @@
-import { useFela } from '../theme';
+import { ReactNode, FC } from 'react';
+import { useDispatch } from 'react-redux';
+import { useFela } from '../../utils';
 import {
   Square as ISquare,
   SquareType,
@@ -6,13 +8,11 @@ import {
   WinState
 } from '../../state/types';
 import Flag from '../flag';
-import { ReactNode, FC } from 'react';
 import Mine from '../mine';
 import Exposed from '../exposed';
 import Covered from '../covered';
 import { actions } from '../../state/reducer';
 import { useSelector } from '../../state/store';
-import { useDispatch } from 'react-redux';
 
 interface SquareProps {
   square: ISquare;
@@ -23,6 +23,7 @@ const Square: FC<SquareProps> = ({ square, coords }) => {
   const winState = useSelector(state => state.winState);
   const dispatch = useDispatch();
   const { css } = useFela();
+
   const showMine =
     winState === WinState.Lost && square.type === SquareType.Mine;
   let exposed = square.exposed || showMine;

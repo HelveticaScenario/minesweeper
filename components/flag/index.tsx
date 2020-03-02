@@ -1,7 +1,11 @@
-import { useFela } from '../theme';
+import { FC } from 'react';
+import { useFela } from '../../utils';
 
-const Flag = () => {
+interface FlagProps {}
+
+const Flag: FC<FlagProps> = () => {
   const { theme } = useFela();
+
   return (
     <div
       style={{

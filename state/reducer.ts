@@ -11,6 +11,7 @@ import {
   simpleQueue,
   incOnTrueDecOnFalse
 } from '../utils';
+
 import {
   Coords,
   Square,
@@ -128,6 +129,7 @@ const expose = (blank: Draft<Blank>, board: Draft<Board>) => {
     board.flagCount--;
   }
 };
+
 const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
   draft,
   { payload }
@@ -157,6 +159,9 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
   resizeAndClear(grid.length);
   enqueue(index(payload));
 
+  // this is an implementation of the Forest Fire algorithm, a version of
+  // the Flood Fill algorithm that uses a queue instead of recursion
+  // you can read more about it at https://en.wikipedia.org/wiki/Flood_fill
   let idx: number | undefined;
   while ((idx = dequeue()) != null) {
     let blank = getBlankOrPanic(idx);
@@ -222,6 +227,37 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
   }
 };
 
+const setFlag: CaseReducer<
+  Board,
+  PayloadAction<Coords & { flagState: boolean }>
+> = (draft, { payload: { flagState, x, y } }) => {
+  const index = makeIndex(draft.difficulty.width, x, y);
+  const square = draft.grid[index];
+
+  if (
+    square.exposed ||
+    square.flagged === flagState ||
+    (flagState && draft.flagCount >= draft.difficulty.mineCount)
+  ) {
+    return;
+  }
+
+  draft.flagCount = incOnTrueDecOnFalse(draft.flagCount, flagState);
+
+  if (square.type === SquareType.Mine) {
+    draft.flaggedMineCount = incOnTrueDecOnFalse(
+      draft.flaggedMineCount,
+      flagState
+    );
+  }
+
+  draft.grid[index].flagged = flagState;
+
+  if (draft.flaggedMineCount === draft.difficulty.mineCount) {
+    draft.winState = WinState.Won;
+  }
+};
+
 const slice = createSlice({
   name: 'board',
   initialState: createBoard(DifficultyOptions.Beginner),
@@ -229,39 +265,8 @@ const slice = createSlice({
     newGame: draft => createBoard(draft.difficultyOption),
     selectDifficulty: (_draft, { payload }: PayloadAction<DifficultyOptions>) =>
       createBoard(payload),
-    setFlag: (
-      draft,
-      {
-        payload: { flagState, x, y }
-      }: PayloadAction<Coords & { flagState: boolean }>
-    ) => {
-      const index = makeIndex(draft.difficulty.width, x, y);
-      const square = draft.grid[index];
-
-      if (
-        square.exposed ||
-        square.flagged === flagState ||
-        (flagState && draft.flagCount >= draft.difficulty.mineCount)
-      ) {
-        return;
-      }
-
-      draft.flagCount = incOnTrueDecOnFalse(draft.flagCount, flagState);
-
-      if (square.type === SquareType.Mine) {
-        draft.flaggedMineCount = incOnTrueDecOnFalse(
-          draft.flaggedMineCount,
-          flagState
-        );
-      }
-
-      draft.grid[index].flagged = flagState;
-
-      if (draft.flaggedMineCount === draft.difficulty.mineCount) {
-        draft.winState = WinState.Won;
-      }
-    },
-    chooseSquare
+    chooseSquare,
+    setFlag
   }
 });
 

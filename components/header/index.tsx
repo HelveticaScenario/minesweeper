@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { useFela } from 'react-fela';
 import { useDispatch } from 'react-redux';
+import { useFela } from '../../utils';
 import { actions } from '../../state/reducer';
 import { useSelector } from '../../state/store';
 import { WinState } from '../../state/types';
 
-const height = 50;
+const BUTTON_HEIGHT = 50;
 
 interface HeaderProps {}
 
@@ -16,6 +16,7 @@ const Header: FC<HeaderProps> = ({}) => {
   const winState = useSelector(state => state.winState);
   const dispatch = useDispatch();
   const { css } = useFela();
+
   let statusText = `Mines Remaining (${minesRemaining})`;
   if (winState !== WinState.Playing) {
     statusText = `You ${WinState[winState]}`;
@@ -30,14 +31,14 @@ const Header: FC<HeaderProps> = ({}) => {
     >
       <h1
         className={css({
-          height
+          height: BUTTON_HEIGHT
         })}
       >
         {statusText}
       </h1>
       <button
         className={css({
-          height
+          height: BUTTON_HEIGHT
         })}
         onClick={() => dispatch(actions.newGame())}
       >
@@ -46,4 +47,5 @@ const Header: FC<HeaderProps> = ({}) => {
     </div>
   );
 };
+
 export default Header;

@@ -2,12 +2,10 @@ import { reducer, actions, difficulties, createBoard } from './reducer';
 import { DifficultyOptions, SquareType, Board, WinState } from './types';
 import { makeIndex } from '../utils';
 import { Draft } from '@reduxjs/toolkit';
+import { difficultyOptionArray } from '../utils/constants';
 
 describe('reducer', () => {
-  const options = Object.keys(DifficultyOptions).map(
-    key => DifficultyOptions[key] as DifficultyOptions
-  );
-  for (let option of options) {
+  for (let option of difficultyOptionArray) {
     describe(`create ${DifficultyOptions[
       option
     ].toLocaleLowerCase()} board`, () => {

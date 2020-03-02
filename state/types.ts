@@ -1,3 +1,7 @@
+export interface ITheme {
+  squareDimension: Dimensions;
+}
+
 export interface Coords {
   readonly x: number;
   readonly y: number;

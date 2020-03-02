@@ -1,14 +1,17 @@
 import { FC } from 'react';
 import Desk from '../desk';
 import Header from '../header';
+import Theme from '../theme';
 
 import Fullscreen from '../fullscreen';
-import Theme, { useFela } from '../theme';
+import { useFela } from '../../utils';
 import DifficultySelector from '../difficultySelector';
 
 interface AppState {}
+
 const App: FC<AppState> = () => {
   const { css } = useFela();
+
   return (
     <Theme>
       <Fullscreen>

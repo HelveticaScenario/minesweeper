@@ -1,5 +1,5 @@
-import { useFela, CssFelaStyle } from 'react-fela';
-import { Coords } from '../state/types';
+import { useFela as useFelaReact } from 'react-fela';
+import { Coords, ITheme } from '../state/types';
 
 export const makeIndex = (width: number, x: number, y: number) => y * width + x;
 export const makeCoords = (width: number, index: number): Coords => ({
@@ -61,3 +61,6 @@ export const simpleQueue = (initialSize: number = 128) => {
 
 export const incOnTrueDecOnFalse = (val: number, bool: boolean) =>
   bool ? val + 1 : val - 1;
+
+export const useFela = <P extends {} = {}>(props?: P) =>
+  useFelaReact<ITheme, P>(props);
