@@ -1,4 +1,9 @@
-import { createSlice, PayloadAction, CaseReducer } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  PayloadAction,
+  CaseReducer,
+  Draft
+} from '@reduxjs/toolkit';
 
 import {
   makeIndex,
@@ -116,6 +121,13 @@ export const createBoard = (difficultyOption: DifficultyOptions): Board => {
 const queue = simpleQueue();
 const { dequeue, enqueue, resizeAndClear } = queue;
 
+const expose = (blank: Draft<Blank>, board: Draft<Board>) => {
+  blank.exposed = true;
+  if (blank.flagged) {
+    blank.flagged = false;
+    board.flagCount--;
+  }
+};
 const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
   draft,
   { payload }
@@ -151,7 +163,7 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
     if (blank.exposed) {
       continue;
     }
-    blank.exposed = true;
+    expose(blank, draft);
     if (blank.minesAdjacent > 0) {
       continue;
     }
@@ -165,7 +177,7 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
       if (blank.exposed) {
         break;
       }
-      blank.exposed = true;
+      expose(blank, draft);
       if (blank.minesAdjacent > 0) {
         break;
       }
@@ -176,7 +188,7 @@ const chooseSquare: CaseReducer<Board, PayloadAction<Coords>> = (
       if (blank.exposed) {
         break;
       }
-      blank.exposed = true;
+      expose(blank, draft);
       if (blank.minesAdjacent > 0) {
         break;
       }
