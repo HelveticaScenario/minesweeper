@@ -17,7 +17,7 @@ const Header: FC<HeaderProps> = ({}) => {
   const dispatch = useDispatch();
   const { css } = useFela();
 
-  let statusText = `Mines Remaining (${minesRemaining})`;
+  let statusText = `Flags Remaining (${minesRemaining})`;
   if (winState !== WinState.Playing) {
     statusText = `You ${WinState[winState]}`;
   }
