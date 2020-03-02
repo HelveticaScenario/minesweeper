@@ -1,9 +1,4 @@
-import {
-  createSlice,
-  PayloadAction,
-  CaseReducer,
-  Draft
-} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, CaseReducer } from '@reduxjs/toolkit';
 
 import {
   makeIndex,
@@ -14,20 +9,16 @@ import {
 import {
   Coords,
   Square,
-  Dimensions,
   Board,
   SquareType,
   Mine,
   Blank,
   WinState,
-  Grid,
-  Indices,
-  Difficulty,
   Difficulties,
   DifficultyOptions
 } from './types';
 
-const difficulties: Difficulties = {
+export const difficulties: Difficulties = {
   [DifficultyOptions.Beginner]: {
     width: 9,
     height: 9,
@@ -45,24 +36,24 @@ const difficulties: Difficulties = {
   }
 };
 
-function getRandomInt(max: number) {
+export function getRandomInt(max: number) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const makeMine = (): Mine => ({
+export const makeMine = (): Mine => ({
   type: SquareType.Mine,
   flagged: false,
   exposed: false
 });
 
-const makeBlank = (minesAdjacent: number): Blank => ({
+export const makeBlank = (minesAdjacent: number): Blank => ({
   type: SquareType.Blank,
   flagged: false,
   exposed: false,
   minesAdjacent
 });
 
-const createBoard = (difficultyOption: DifficultyOptions): Board => {
+export const createBoard = (difficultyOption: DifficultyOptions): Board => {
   const { width, height, mineCount } = difficulties[difficultyOption];
 
   const grid: Square[] = Array(width * height);

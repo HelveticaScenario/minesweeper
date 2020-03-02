@@ -10,11 +10,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "test-watch": "jest --watch"
   },
   "dependencies": {
-    "@cloudflare/component-button": "^2.6.32",
-    "@cloudflare/component-page": "^4.2.259",
     "@reduxjs/toolkit": "^1.2.5",
     "@types/react": "^16.9.20",
     "@types/react-redux": "^7.1.7",
@@ -31,7 +30,11 @@
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^25.1.3",
     "@types/node": "^13.7.2",
+    "babel-jest": "^25.1.0",
+    "react-test-renderer": "^16.13.0",
+    "ts-jest": "^25.2.1",
     "typescript": "^3.7.5",
     "uglifyjs-webpack-plugin": "^2.2.0"
   }
