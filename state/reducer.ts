@@ -227,6 +227,7 @@ const slice = createSlice({
       const square = draft.grid[index];
 
       if (
+        square.exposed ||
         square.flagged === flagState ||
         (flagState && draft.flagCount >= draft.difficulty.mineCount)
       ) {
